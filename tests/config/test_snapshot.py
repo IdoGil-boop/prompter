@@ -4,8 +4,6 @@ from __future__ import annotations
 import tempfile
 from pathlib import Path
 
-import pytest
-
 from prompter.config.agent_config import AgentConfig
 from prompter.config.snapshot import ConfigSnapshot
 

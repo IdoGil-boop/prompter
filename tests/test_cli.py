@@ -1,12 +1,9 @@
 """Tests for CLI entry point."""
 from __future__ import annotations
 
-import json
 import tempfile
 from pathlib import Path
-from unittest.mock import AsyncMock, patch
 
-import pytest
 from click.testing import CliRunner
 
 from prompter.cli import main

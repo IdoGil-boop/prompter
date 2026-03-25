@@ -4,15 +4,11 @@ from __future__ import annotations
 import json
 import tempfile
 from pathlib import Path
-from typing import Any
-
-import pytest
 
 from prompter.config.agent_config import AgentConfig, ToolSpec
 from prompter.eval.test_suite import TestCase, TestSuite
 from prompter.llm.adapter import LLMResponse, Message, TokenUsage, ToolCall, ToolDefinition
 from prompter.optimizer import Optimizer, OptimizerConfig
-from prompter.runner.tool_sandbox import ToolSandbox
 
 
 class ToolAwareMockLLM:
@@ -55,7 +51,10 @@ class ToolAwareMockLLM:
         # Optimizer/mutator: rewrite system prompt
         if "prompt optimization" in system_content.lower():
             return LLMResponse(
-                content="You are a calculator. Always use the calculate tool for math. Return the numeric result.",
+                content=(
+                    "You are a calculator. Always use the calculate tool"
+                    " for math. Return the numeric result."
+                ),
                 usage=TokenUsage(10, 10),
             )
 

@@ -2,7 +2,7 @@
 <!-- CC10X: Do not rename headings. Used as Edit anchors. -->
 
 ## Current Workflow
-BUILD Phase 5+6 → COMPLETE
+ALL PHASES COMPLETE → Ready for release
 
 ## Tasks
 - [x] Project scaffolding (pyproject.toml, Makefile, src layout)
@@ -28,6 +28,7 @@ BUILD Phase 5+6 → COMPLETE
 - [x] README.md
 
 ## Completed
+- [x] REM-FIX: CLI --tiers wired, api_key_env resolved, sparkline logged — 272/272 tests — 2026-03-25
 - [x] Phase 5+6: Escalation integration, variance hardening, config file, rich CLI, examples, CI, README — 263/263 tests — 2026-03-25
 - [x] Phase 4: Mock-first mechanism + architecture mutations — MockEngine, MockTarget, MockTargetOptimizer, RAG/Context/Memory mutations — 235/235 tests — 2026-03-25
 - [x] Phase 3: Attribution + history analysis — TraceAttributor, AblationSweep, AttributionMatrix, HistoryAnalyzer, optimizer integration — 201/201 tests — 2026-03-25
@@ -39,12 +40,12 @@ BUILD Phase 5+6 → COMPLETE
 - [x] REM-FIX: All ruff (56→0) and mypy (15→0) errors fixed — 2026-03-24
 
 ## Verification
-- Final: `uv run pytest tests/ --tb=short` → exit 0 (263/263 passed)
-- Final: `uv run ruff check src/prompter/` → exit 0 (All checks passed)
+- Final: `uv run pytest tests/ --tb=short` → exit 0 (272/272 passed)
+- Final: `uv run ruff check src/prompter/` → exit 0
 - Final: `uv run mypy src/prompter/ --ignore-missing-imports` → exit 0 (42 files)
-- TDD: RED→GREEN for Phase 5+6 (28 new tests)
-- Phase 5: escalation_tiers in Optimizer, variance_modes in OptimizerConfig, effective_score integration
-- Phase 6: config_file.py, CLI --variance-modes/--tiers/--config, logo+sparkline+diff, examples, CI, README
+- Final: All imports verified, CLI works, 4 examples, CI configured
+- Final: 9 mutations registered, --tiers wired, api_key_env resolved
+- Review: APPROVE, Hunt: CLEAN across all phases
 
 ## Last Updated
 2026-03-25

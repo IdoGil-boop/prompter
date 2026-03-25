@@ -1,16 +1,14 @@
 """Tests for mutation base — registry, MutationResult, MutationProposal."""
 from __future__ import annotations
 
-import pytest
-
 from prompter.config.agent_config import AgentConfig
 from prompter.eval.evaluator import EvalReport
 from prompter.mutations.base import (
+    _MUTATION_REGISTRY,
     Mutation,
     MutationContext,
     MutationProposal,
     MutationResult,
-    _MUTATION_REGISTRY,
     register_mutation,
 )
 
@@ -25,7 +23,7 @@ class TestMutationRegistry:
 
     def test_register_mutation_decorator(self) -> None:
         """register_mutation should add class to registry."""
-        initial_count = len(_MUTATION_REGISTRY)
+        len(_MUTATION_REGISTRY)
 
         @register_mutation
         class TestMutation(Mutation):

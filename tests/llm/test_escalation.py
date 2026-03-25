@@ -3,8 +3,7 @@ from __future__ import annotations
 
 import pytest
 
-from prompter.llm.adapter import LLMResponse, Message, TokenUsage, ToolDefinition
-from prompter.llm.escalation import EscalationResult, ModelEscalation
+from prompter.llm.escalation import ModelEscalation
 from tests.conftest import MockLLM
 
 

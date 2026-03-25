@@ -1,8 +1,6 @@
 """Tests for AgentRunner — wraps AgentConfig + LLMAdapter into AgentFn."""
 from __future__ import annotations
 
-import pytest
-
 from prompter.config.agent_config import AgentConfig, ToolSpec
 from prompter.runner.agent_runner import AgentRunner
 from tests.conftest import MockLLM

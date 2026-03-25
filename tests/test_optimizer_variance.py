@@ -4,16 +4,18 @@ from __future__ import annotations
 import json
 import tempfile
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import pytest
 
 from prompter.config.agent_config import AgentConfig
-from prompter.eval.evaluator import Evaluator
 from prompter.eval.test_suite import TestCase, TestSuite
 from prompter.eval.variance import VarianceTracker, effective_score
-from prompter.llm.adapter import LLMResponse, Message, TokenUsage
 from prompter.optimizer import Optimizer, OptimizerConfig
 from tests.conftest import MockLLM
+
+if TYPE_CHECKING:
+    from prompter.llm.adapter import Message
 
 
 class TestVarianceModes:

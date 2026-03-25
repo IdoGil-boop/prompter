@@ -1,15 +1,10 @@
 """Tests for AgentRunner multi-turn tool call loop."""
 from __future__ import annotations
 
-from typing import Any
-
-import pytest
-
 from prompter.config.agent_config import AgentConfig, ToolSpec
 from prompter.llm.adapter import LLMResponse, Message, TokenUsage, ToolCall, ToolDefinition
 from prompter.runner.agent_runner import AgentRunner
 from prompter.runner.tool_sandbox import ToolSandbox
-from tests.conftest import MockLLM
 
 
 class ToolCallMockLLM:

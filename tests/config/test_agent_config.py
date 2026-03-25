@@ -105,9 +105,10 @@ class TestAgentConfig:
             AgentConfig.load("/nonexistent/path")
 
     def test_load_missing_system_prompt_raises(self) -> None:
-        with tempfile.TemporaryDirectory() as d:
-            with pytest.raises(FileNotFoundError, match="system_prompt.md"):
-                AgentConfig.load(d)
+        with tempfile.TemporaryDirectory() as d, pytest.raises(
+            FileNotFoundError, match="system_prompt.md"
+        ):
+            AgentConfig.load(d)
 
 
 class TestToolSpec:

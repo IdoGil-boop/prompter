@@ -1,8 +1,6 @@
 """Tests for MockEngine — mock injection and hypothesis testing."""
 from __future__ import annotations
 
-from typing import Any
-
 import pytest
 
 from prompter.config.agent_config import AgentConfig, ToolSpec
@@ -10,7 +8,6 @@ from prompter.eval.evaluator import Evaluator
 from prompter.eval.test_suite import TestCase, TestSuite
 from prompter.mock.engine import MockCapability, MockEngine, MockTestResult
 from tests.conftest import MockLLM
-
 
 # ---------------------------------------------------------------------------
 # Fixtures

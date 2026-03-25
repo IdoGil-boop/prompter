@@ -11,19 +11,21 @@ from __future__ import annotations
 import json
 import tempfile
 from pathlib import Path
-from typing import Any, get_args
+from typing import TYPE_CHECKING, get_args
+
 import pytest
 
 from prompter.config.agent_config import AgentConfig
 from prompter.eval.evaluator import EvalReport, TestResult
 from prompter.eval.metrics import METRIC_REGISTRY
 from prompter.eval.test_suite import EvalMode, TestCase, TestSuite
-from prompter.llm.adapter import LLMResponse, Message, TokenUsage
 from prompter.mutations.base import MutationContext, MutationProposal
 from prompter.mutations.prompt import SystemPromptMutation, _get_tests_from_context
 from prompter.mutations.proposer import _parse_proposal
 from tests.conftest import MockLLM
 
+if TYPE_CHECKING:
+    from prompter.llm.adapter import Message
 
 # --- Issue 1: EvalMode Literal missing "contains_match" ---
 
@@ -50,7 +52,7 @@ class TestEvalModeLiteral:
 
 class TestGetTestsFromContext:
     def test_returns_tests_when_test_suite_provided(self) -> None:
-        """When MutationContext has a test_suite, _get_tests_from_context should return its tests."""
+        """_get_tests_from_context should return tests when test_suite provided."""
         config = AgentConfig(system_prompt="test")
         report = EvalReport(config_id="x", aggregate_score=0.5, results=[
             TestResult(test_id="t1", score=0.0, actual_output="wrong"),
@@ -106,7 +108,7 @@ class TestGetTestsFromContext:
             mutation_type="prompt.rewrite", rationale="fix",
             target_tests=["t1"], target_components=["system_prompt"], cost_tier=1,
         )
-        result = await mutation.apply(context, proposal)
+        await mutation.apply(context, proposal)
         # Verify the LLM received failure descriptions that include test input/expected
         call_messages = llm._call_log[0]
         user_msg = call_messages[-1].content
@@ -188,7 +190,7 @@ class TestOptimizerBaselineReuse:
 
             optimizer._evaluate = counting_evaluate  # type: ignore[assignment]
 
-            result = await optimizer.run()
+            await optimizer.run()
 
         # With perfect agent: baseline eval (1) + final eval of best (1) = 2
         # BUG: without fix, there's an extra re-eval of original config = 3

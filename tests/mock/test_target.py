@@ -6,7 +6,6 @@ import pytest
 from prompter.mock.target import MockTarget, MockTargetOptimizer
 from tests.conftest import MockLLM
 
-
 # ---------------------------------------------------------------------------
 # MockTarget dataclass
 # ---------------------------------------------------------------------------

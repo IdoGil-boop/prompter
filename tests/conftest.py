@@ -2,15 +2,17 @@
 from __future__ import annotations
 
 import tempfile
-from collections.abc import Callable
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING
 
 import pytest
 
 from prompter.config.agent_config import AgentConfig, ToolSpec
 from prompter.eval.test_suite import TestCase, TestSuite
 from prompter.llm.adapter import LLMResponse, Message, TokenUsage, ToolDefinition
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 
 class MockLLM:
@@ -31,10 +33,7 @@ class MockLLM:
         max_tokens: int = 4096,
     ) -> LLMResponse:
         self._call_log.append(messages)
-        if callable(self._responses):
-            content = self._responses(messages)
-        else:
-            content = self._responses.pop(0)
+        content = self._responses(messages) if callable(self._responses) else self._responses.pop(0)
         return LLMResponse(content=content, usage=TokenUsage(10, 10))
 
     @property

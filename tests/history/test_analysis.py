@@ -21,9 +21,20 @@ def _make_store(records: list[IterationRecord]) -> HistoryStore:
 class TestStagnationDetector:
     def test_no_stagnation_with_improvement(self) -> None:
         records = [
-            IterationRecord(iteration=0, timestamp="t", config_hash="h", score_after=0.3, accepted=True),
-            IterationRecord(iteration=1, timestamp="t", config_hash="h", mutation_type="prompt.rewrite", score_before=0.3, score_after=0.5, accepted=True),
-            IterationRecord(iteration=2, timestamp="t", config_hash="h", mutation_type="prompt.rewrite", score_before=0.5, score_after=0.7, accepted=True),
+            IterationRecord(
+                iteration=0, timestamp="t", config_hash="h",
+                score_after=0.3, accepted=True,
+            ),
+            IterationRecord(
+                iteration=1, timestamp="t", config_hash="h",
+                mutation_type="prompt.rewrite",
+                score_before=0.3, score_after=0.5, accepted=True,
+            ),
+            IterationRecord(
+                iteration=2, timestamp="t", config_hash="h",
+                mutation_type="prompt.rewrite",
+                score_before=0.5, score_after=0.7, accepted=True,
+            ),
         ]
         store = _make_store(records)
         analyzer = HistoryAnalyzer(store)
@@ -31,12 +42,35 @@ class TestStagnationDetector:
 
     def test_stagnation_detected(self) -> None:
         records = [
-            IterationRecord(iteration=0, timestamp="t", config_hash="h", score_after=0.5, accepted=True),
-            IterationRecord(iteration=1, timestamp="t", config_hash="h", mutation_type="prompt.rewrite", score_before=0.5, score_after=0.5, accepted=False),
-            IterationRecord(iteration=2, timestamp="t", config_hash="h", mutation_type="prompt.rewrite", score_before=0.5, score_after=0.5, accepted=False),
-            IterationRecord(iteration=3, timestamp="t", config_hash="h", mutation_type="tool_desc.edit", score_before=0.5, score_after=0.49, accepted=False),
-            IterationRecord(iteration=4, timestamp="t", config_hash="h", mutation_type="tool_desc.edit", score_before=0.5, score_after=0.5, accepted=False),
-            IterationRecord(iteration=5, timestamp="t", config_hash="h", mutation_type="config.adjust", score_before=0.5, score_after=0.51, accepted=False),
+            IterationRecord(
+                iteration=0, timestamp="t", config_hash="h",
+                score_after=0.5, accepted=True,
+            ),
+            IterationRecord(
+                iteration=1, timestamp="t", config_hash="h",
+                mutation_type="prompt.rewrite",
+                score_before=0.5, score_after=0.5, accepted=False,
+            ),
+            IterationRecord(
+                iteration=2, timestamp="t", config_hash="h",
+                mutation_type="prompt.rewrite",
+                score_before=0.5, score_after=0.5, accepted=False,
+            ),
+            IterationRecord(
+                iteration=3, timestamp="t", config_hash="h",
+                mutation_type="tool_desc.edit",
+                score_before=0.5, score_after=0.49, accepted=False,
+            ),
+            IterationRecord(
+                iteration=4, timestamp="t", config_hash="h",
+                mutation_type="tool_desc.edit",
+                score_before=0.5, score_after=0.5, accepted=False,
+            ),
+            IterationRecord(
+                iteration=5, timestamp="t", config_hash="h",
+                mutation_type="config.adjust",
+                score_before=0.5, score_after=0.51, accepted=False,
+            ),
         ]
         store = _make_store(records)
         analyzer = HistoryAnalyzer(store)
@@ -51,12 +85,35 @@ class TestStagnationDetector:
 class TestMutationEffectiveness:
     def test_effectiveness_rates(self) -> None:
         records = [
-            IterationRecord(iteration=0, timestamp="t", config_hash="h", score_after=0.3, accepted=True),
-            IterationRecord(iteration=1, timestamp="t", config_hash="h", mutation_type="prompt.rewrite", score_after=0.5, accepted=True),
-            IterationRecord(iteration=2, timestamp="t", config_hash="h", mutation_type="prompt.rewrite", score_after=0.4, accepted=False),
-            IterationRecord(iteration=3, timestamp="t", config_hash="h", mutation_type="tool_desc.edit", score_after=0.6, accepted=True),
-            IterationRecord(iteration=4, timestamp="t", config_hash="h", mutation_type="tool_desc.edit", score_after=0.5, accepted=False),
-            IterationRecord(iteration=5, timestamp="t", config_hash="h", mutation_type="tool_desc.edit", score_after=0.4, accepted=False),
+            IterationRecord(
+                iteration=0, timestamp="t", config_hash="h",
+                score_after=0.3, accepted=True,
+            ),
+            IterationRecord(
+                iteration=1, timestamp="t", config_hash="h",
+                mutation_type="prompt.rewrite",
+                score_after=0.5, accepted=True,
+            ),
+            IterationRecord(
+                iteration=2, timestamp="t", config_hash="h",
+                mutation_type="prompt.rewrite",
+                score_after=0.4, accepted=False,
+            ),
+            IterationRecord(
+                iteration=3, timestamp="t", config_hash="h",
+                mutation_type="tool_desc.edit",
+                score_after=0.6, accepted=True,
+            ),
+            IterationRecord(
+                iteration=4, timestamp="t", config_hash="h",
+                mutation_type="tool_desc.edit",
+                score_after=0.5, accepted=False,
+            ),
+            IterationRecord(
+                iteration=5, timestamp="t", config_hash="h",
+                mutation_type="tool_desc.edit",
+                score_after=0.4, accepted=False,
+            ),
         ]
         store = _make_store(records)
         analyzer = HistoryAnalyzer(store)
@@ -75,10 +132,25 @@ class TestMutationEffectiveness:
 class TestComponentChurn:
     def test_churn_counts(self) -> None:
         records = [
-            IterationRecord(iteration=0, timestamp="t", config_hash="h", score_after=0.3, accepted=True),
-            IterationRecord(iteration=1, timestamp="t", config_hash="h", mutation_type="prompt.rewrite", components_touched=["system_prompt"], accepted=True),
-            IterationRecord(iteration=2, timestamp="t", config_hash="h", mutation_type="prompt.rewrite", components_touched=["system_prompt"], accepted=True),
-            IterationRecord(iteration=3, timestamp="t", config_hash="h", mutation_type="tool_desc.edit", components_touched=["tool:search"], accepted=True),
+            IterationRecord(
+                iteration=0, timestamp="t", config_hash="h",
+                score_after=0.3, accepted=True,
+            ),
+            IterationRecord(
+                iteration=1, timestamp="t", config_hash="h",
+                mutation_type="prompt.rewrite",
+                components_touched=["system_prompt"], accepted=True,
+            ),
+            IterationRecord(
+                iteration=2, timestamp="t", config_hash="h",
+                mutation_type="prompt.rewrite",
+                components_touched=["system_prompt"], accepted=True,
+            ),
+            IterationRecord(
+                iteration=3, timestamp="t", config_hash="h",
+                mutation_type="tool_desc.edit",
+                components_touched=["tool:search"], accepted=True,
+            ),
         ]
         store = _make_store(records)
         analyzer = HistoryAnalyzer(store)
@@ -95,8 +167,15 @@ class TestComponentChurn:
 class TestSummary:
     def test_summary_returns_string(self) -> None:
         records = [
-            IterationRecord(iteration=0, timestamp="t", config_hash="h", score_after=0.3, accepted=True),
-            IterationRecord(iteration=1, timestamp="t", config_hash="h", mutation_type="prompt.rewrite", score_before=0.3, score_after=0.6, accepted=True),
+            IterationRecord(
+                iteration=0, timestamp="t", config_hash="h",
+                score_after=0.3, accepted=True,
+            ),
+            IterationRecord(
+                iteration=1, timestamp="t", config_hash="h",
+                mutation_type="prompt.rewrite",
+                score_before=0.3, score_after=0.6, accepted=True,
+            ),
         ]
         store = _make_store(records)
         analyzer = HistoryAnalyzer(store)
