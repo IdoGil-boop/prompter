@@ -168,9 +168,9 @@ class TestSparklineLogging:
 
             # The error should be logged, not silently swallowed
             assert any(
-                "Display rendering failed" in record.message
+                "Sparkline display failed" in record.message
                 for record in caplog.records
             ), (
-                f"Expected 'Display rendering failed' in log records. "
+                f"Expected 'Sparkline display failed' in log records. "
                 f"Got: {[r.message for r in caplog.records]}"
             )

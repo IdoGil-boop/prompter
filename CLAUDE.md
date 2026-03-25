@@ -8,7 +8,7 @@ This file is the **entry point** for Claude agents. It provides essential contex
 
 ## Project Overview
 
-. Tech stack: General.
+Prompter applies Karpathy's autoresearch concept to LLM agent optimization. It iteratively optimizes an agent config (system prompts, tools, RAG, context, memory) against a user-provided test suite. Tech stack: Python.
 
 ---
 
@@ -28,6 +28,7 @@ This file is the **entry point** for Claude agents. It provides essential contex
 
 ### Architecture & Design
 - **[Architecture](docs/architecture/)** — System design docs
+- **[Implementation Plan](docs/plans/2026-03-24-prompter-implementation-plan.md)** — Phased build plan (MVP → full optimizer loop)
 
 ### Gotchas & Patterns
 - **[Common Gotchas](docs/reference/COMMON_GOTCHAS.md)** — Known pitfalls and workarounds

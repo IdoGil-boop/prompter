@@ -2,13 +2,15 @@
 <!-- CC10X: Do not rename headings. Used as Edit anchors. -->
 
 ## Current Focus
-Phase 5+6 COMPLETE — 263/263 tests, mypy clean, ruff clean. All phases implemented.
+PLAN: Bloom-inspired evaluation integrations (llm_judge metric, generate-suite CLI, behavioral guardrail)
 
 ## Recent Changes
+[PLAN-START: wf:plan-bloom]
+- [2026-03-25] PLAN created: Bloom-inspired eval integrations — llm_judge, generate-suite, behavioral guardrail
 [BUILD-START: wf:37]
-- [2026-03-25] Phase 5+6 complete: escalation integration, variance hardening, config file, rich CLI, examples, CI, README — 263/263 tests
-- [2026-03-25] Phase 4 complete: MockEngine, MockTarget, MockTargetOptimizer, 3 architecture mutations — 235/235 tests
-- [2026-03-25] Review: APPROVE (90%), Hunt: CLEAN. No REM-FIX needed.
+- [2026-03-25] REM-FIX: --tiers wired to Optimizer, api_key_env resolved, sparkline logged — 272/272 tests
+- [2026-03-25] Phase 5+6 complete: escalation, variance, config file, rich CLI, examples, CI, README
+- [2026-03-25] All 6 phases complete. Project verified and ready for release.
 
 ## Next Steps
 1. All phases complete. Project ready for open-source release.
@@ -48,10 +50,14 @@ Phase 5+6 COMPLETE — 263/263 tests, mypy clean, ruff clean. All phases impleme
 - Architecture mutations use _ArchitectureMutationBase shared base with _target_field/_component_name for DRY
 - MockEngine.test_hypothesis uses direct mock agent_fn (not injected config) for hypothesis eval — simpler and more reliable
 - MockTargetOptimizer uses LLM to improve implementations toward target outputs — cheap Loop 2 without full agent evaluation
+- CLI feature flags must be traced to constructor params — print is not proof of wiring
+- _resolve_api_key cascading default: explicit key > env var via config api_key_env field
+- Sparkline errors caught at DEBUG — cosmetic display should not crash CLI output
 
 ## References
 - [cc10x-internal] memory_task_id: 42 wf:37
-- Plan: `docs/plans/2026-03-24-prompter-implementation-plan.md`
+- Plan: `docs/plans/2026-03-25-bloom-integrations-plan.md`
+- Previous Plan: `docs/plans/2026-03-24-prompter-implementation-plan.md`
 - Design: N/A
 - Research: N/A
 - Inspiration: https://github.com/karpathy/autoresearch

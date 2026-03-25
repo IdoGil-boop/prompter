@@ -4,6 +4,7 @@ from __future__ import annotations
 import asyncio
 import difflib
 import logging
+import os
 import sys
 from pathlib import Path
 from typing import Any
@@ -32,6 +33,32 @@ LOGO = r"""
 """
 
 
+def _resolve_api_key(
+    explicit_key: str | None,
+    llm_config: Any | None,
+) -> str | None:
+    """Resolve API key from explicit value or config file's api_key_env.
+
+    Args:
+        explicit_key: Explicit --api-key value (takes precedence).
+        llm_config: LLMConfig from config file (has api_key_env field).
+
+    Returns:
+        Resolved API key, or None if not found.
+    """
+    if explicit_key is not None:
+        return explicit_key
+    if llm_config is not None and hasattr(llm_config, "api_key_env"):
+        return os.environ.get(llm_config.api_key_env)
+    return None
+
+
+PROVIDER_BASE_URLS: dict[str, str] = {
+    "openai": "https://api.openai.com/v1",
+    "ollama": "http://localhost:11434",
+}
+
+
 def _create_llm(model: str, base_url: str, api_key: str | None) -> Any:
     """Create an LLM adapter based on model/url."""
     from prompter.llm.openai_compat import OpenAICompatAdapter
@@ -41,6 +68,28 @@ def _create_llm(model: str, base_url: str, api_key: str | None) -> Any:
         base_url=base_url,
         api_key=api_key or "",
     )
+
+
+def _create_tier_adapters(
+    parsed_tiers: dict[str, dict[str, str]],
+    api_key: str | None,
+) -> dict[str, Any]:
+    """Create LLMAdapter instances for each escalation tier.
+
+    Args:
+        parsed_tiers: Mapping of tier name to {provider, model}.
+        api_key: Shared API key for all tiers.
+
+    Returns:
+        Mapping of tier name to LLMAdapter instance.
+    """
+    adapters: dict[str, Any] = {}
+    for name, tier_info in parsed_tiers.items():
+        provider = tier_info["provider"]
+        model = tier_info["model"]
+        base_url = PROVIDER_BASE_URLS.get(provider, PROVIDER_BASE_URLS["openai"])
+        adapters[name] = _create_llm(model, base_url, api_key)
+    return adapters
 
 
 def _parse_tiers(tiers_str: str | None) -> dict[str, dict[str, str]] | None:
@@ -195,6 +244,8 @@ def optimize(
             base_url = file_config.llm.base_url
         if parsed_variance_modes is None:
             parsed_variance_modes = file_config.optimizer.variance_modes
+        # Resolve api_key_env from config file if no explicit --api-key
+        api_key = _resolve_api_key(api_key, file_config.llm)
 
     config = AgentConfig.load(agent_dir)
     suite = TestSuite.load(test_suite)
@@ -213,8 +264,13 @@ def optimize(
         variance_modes=parsed_variance_modes or ["run"],
     )
 
-    # Parse tier configuration
+    # Parse tier configuration and create adapters
     parsed_tiers = _parse_tiers(tiers)
+    tier_adapters = (
+        _create_tier_adapters(parsed_tiers, api_key)
+        if parsed_tiers
+        else None
+    )
 
     optimizer = Optimizer(
         config=config,
@@ -222,6 +278,7 @@ def optimize(
         llm=llm,
         opt_config=opt_config,
         history_path=history_path,
+        escalation_tiers=tier_adapters,
     )
 
     console.print("[bold]Starting optimization...[/bold]")
@@ -379,8 +436,8 @@ def _print_optimization_result(
             scores = [r.score_after for r in records]
             if scores:
                 console.print(f"\n  Score trajectory: {_sparkline(scores)}")
-        except Exception:
-            pass  # Non-critical display feature
+        except Exception as exc:
+            logger.debug("Sparkline display failed: %s", exc)
 
     # Prompt diff
     if original_config.system_prompt != result.best_config.system_prompt:
