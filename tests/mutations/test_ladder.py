@@ -1,9 +1,11 @@
 """Tests for escalation ladder — tier tracking, escalation logic."""
 from __future__ import annotations
 
-import pytest
-
-from prompter.mutations.ladder import ESCALATION_TIERS, LadderState, MAX_CONSECUTIVE_FAILURES_BEFORE_ESCALATE
+from prompter.mutations.ladder import (
+    ESCALATION_TIERS,
+    MAX_CONSECUTIVE_FAILURES_BEFORE_ESCALATE,
+    LadderState,
+)
 
 
 class TestLadderState:

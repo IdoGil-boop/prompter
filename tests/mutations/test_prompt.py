@@ -1,8 +1,6 @@
 """Tests for SystemPromptMutation — prompt rewrite with mock LLM."""
 from __future__ import annotations
 
-import pytest
-
 from prompter.config.agent_config import AgentConfig
 from prompter.eval.evaluator import EvalReport, TestResult
 from prompter.mutations.base import MutationContext, MutationProposal, MutationResult

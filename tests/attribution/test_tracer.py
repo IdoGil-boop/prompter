@@ -14,7 +14,7 @@ class TestTraceAttribution:
         attr = TraceAttribution(component_scores={"x": 1.0})
         try:
             attr.component_scores = {}  # type: ignore[misc]
-            assert False, "Should be frozen"
+            raise AssertionError("Should be frozen")
         except AttributeError:
             pass
 

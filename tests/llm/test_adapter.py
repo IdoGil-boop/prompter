@@ -1,11 +1,8 @@
 """Tests for LLM adapter protocol conformance."""
 from __future__ import annotations
 
-import pytest
-
 from prompter.llm.adapter import (
     LLMAdapter,
-    LLMResponse,
     Message,
     TokenUsage,
     ToolCall,

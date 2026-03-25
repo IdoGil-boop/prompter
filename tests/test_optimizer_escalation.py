@@ -4,14 +4,15 @@ from __future__ import annotations
 import json
 import tempfile
 from pathlib import Path
-
-import pytest
+from typing import TYPE_CHECKING
 
 from prompter.config.agent_config import AgentConfig
 from prompter.eval.test_suite import TestCase, TestSuite
-from prompter.llm.adapter import LLMResponse, Message, TokenUsage
 from prompter.optimizer import Optimizer, OptimizerConfig
 from tests.conftest import MockLLM
+
+if TYPE_CHECKING:
+    from prompter.llm.adapter import Message
 
 
 class MockLLMTier(MockLLM):
@@ -111,11 +112,10 @@ class TestOptimizerEscalation:
             ]
         )
 
-        call_count = 0
 
         def respond_main(messages: list[Message]) -> str:
             system = messages[0].content if messages and messages[0].role == "system" else ""
-            user = messages[-1].content if messages else ""
+            messages[-1].content if messages else ""
 
             if "optimization strategist" in system.lower():
                 return json.dumps({

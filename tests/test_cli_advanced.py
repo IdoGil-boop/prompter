@@ -1,16 +1,10 @@
 """Tests for advanced CLI options (variance-modes, tiers, config file)."""
 from __future__ import annotations
 
-import tempfile
-from pathlib import Path
-
 import pytest
-import yaml
 from click.testing import CliRunner
 
 from prompter.cli import main
-from prompter.config.agent_config import AgentConfig
-from prompter.eval.test_suite import TestCase, TestSuite
 
 
 class TestCLIVarianceModes:

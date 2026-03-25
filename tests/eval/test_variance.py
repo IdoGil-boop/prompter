@@ -3,7 +3,12 @@ from __future__ import annotations
 
 import pytest
 
-from prompter.eval.variance import VarianceReport, VarianceTracker, compute_run_variance, effective_score
+from prompter.eval.variance import (
+    VarianceReport,
+    VarianceTracker,
+    compute_run_variance,
+    effective_score,
+)
 
 
 class TestEffectiveScore:

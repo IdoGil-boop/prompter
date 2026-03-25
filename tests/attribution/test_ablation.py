@@ -5,7 +5,7 @@ import pytest
 
 from prompter.attribution.ablation import AblationResult, AblationSweep
 from prompter.config.agent_config import AgentConfig, ToolSpec
-from prompter.eval.evaluator import EvalReport, Evaluator, TestResult
+from prompter.eval.evaluator import EvalReport, TestResult
 from prompter.eval.test_suite import TestCase, TestSuite
 from tests.conftest import MockLLM
 
@@ -23,7 +23,7 @@ class TestAblationResult:
         result = AblationResult(component_deltas={}, baseline_score=0.5)
         try:
             result.baseline_score = 1.0  # type: ignore[misc]
-            assert False, "Should be frozen"
+            raise AssertionError("Should be frozen")
         except AttributeError:
             pass
 

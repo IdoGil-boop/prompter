@@ -2,12 +2,11 @@
 from __future__ import annotations
 
 import json
-from typing import Any
 
 import pytest
 
-from prompter.config.agent_config import AgentConfig, ToolSpec
-from prompter.eval.evaluator import EvalReport, Evaluator, TestResult
+from prompter.config.agent_config import AgentConfig
+from prompter.eval.evaluator import EvalReport, TestResult
 from prompter.eval.test_suite import TestCase, TestSuite
 from prompter.mutations.architecture import (
     ContextArchitectureMutation,
@@ -21,7 +20,6 @@ from prompter.mutations.base import (
     MutationResult,
 )
 from tests.conftest import MockLLM
-
 
 # ---------------------------------------------------------------------------
 # Fixtures
