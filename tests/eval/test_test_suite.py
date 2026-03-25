@@ -52,7 +52,10 @@ tests:
         suite = TestSuite(tests=[
             TestCase(id="t1", input="a", expected="b", eval_mode="exact_match", tags=["fast"]),
             TestCase(id="t2", input="c", expected="d", eval_mode="exact_match", tags=["slow"]),
-            TestCase(id="t3", input="e", expected="f", eval_mode="exact_match", tags=["fast", "slow"]),
+            TestCase(
+                id="t3", input="e", expected="f",
+                eval_mode="exact_match", tags=["fast", "slow"],
+            ),
         ])
         fast_suite = suite.filter_by_tags(["fast"])
         assert len(fast_suite.tests) == 2

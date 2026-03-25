@@ -10,8 +10,8 @@ from prompter.eval.test_suite import TestCase, TestSuite
 class TestEvaluator:
     async def test_perfect_score(self) -> None:
         """Agent that returns exact matches should score 1.0."""
-        async def agent_fn(input: str, context: dict | None = None) -> str:
-            if "hello" in input.lower():
+        async def agent_fn(input_text: str, context: dict | None = None) -> str:
+            if "hello" in input_text.lower():
                 return "hello"
             return "goodbye"
 
@@ -28,7 +28,7 @@ class TestEvaluator:
 
     async def test_zero_score(self) -> None:
         """Agent that returns wrong outputs should score 0.0."""
-        async def agent_fn(input: str, context: dict | None = None) -> str:
+        async def agent_fn(input_text: str, context: dict | None = None) -> str:
             return "wrong answer"
 
         suite = TestSuite(tests=[
@@ -42,8 +42,8 @@ class TestEvaluator:
 
     async def test_partial_score(self) -> None:
         """Agent that gets some right should have partial score."""
-        async def agent_fn(input: str, context: dict | None = None) -> str:
-            if "hello" in input:
+        async def agent_fn(input_text: str, context: dict | None = None) -> str:
+            if "hello" in input_text:
                 return "hello"
             return "wrong"
 
@@ -60,7 +60,7 @@ class TestEvaluator:
 
     async def test_agent_error_scores_zero(self) -> None:
         """Agent that raises should get score 0 for that test."""
-        async def agent_fn(input: str, context: dict | None = None) -> str:
+        async def agent_fn(input_text: str, context: dict | None = None) -> str:
             raise ValueError("Agent crashed")
 
         suite = TestSuite(tests=[
@@ -74,14 +74,20 @@ class TestEvaluator:
 
     async def test_weighted_scoring(self) -> None:
         """Weights should affect aggregate score."""
-        async def agent_fn(input: str, context: dict | None = None) -> str:
-            if "important" in input:
+        async def agent_fn(input_text: str, context: dict | None = None) -> str:
+            if "important" in input_text:
                 return "correct"
             return "wrong"
 
         suite = TestSuite(tests=[
-            TestCase(id="t1", input="important", expected="correct", eval_mode="exact_match", weight=3.0),
-            TestCase(id="t2", input="trivial", expected="correct", eval_mode="exact_match", weight=1.0),
+            TestCase(
+                id="t1", input="important", expected="correct",
+                eval_mode="exact_match", weight=3.0,
+            ),
+            TestCase(
+                id="t2", input="trivial", expected="correct",
+                eval_mode="exact_match", weight=1.0,
+            ),
         ])
         evaluator = Evaluator(n_runs=1)
         report = await evaluator.evaluate(agent_fn, suite, "test")
@@ -90,7 +96,7 @@ class TestEvaluator:
         assert report.aggregate_score == pytest.approx(0.75)
 
     async def test_pass_rate_property(self) -> None:
-        async def agent_fn(input: str, context: dict | None = None) -> str:
+        async def agent_fn(input_text: str, context: dict | None = None) -> str:
             return "hello"
 
         suite = TestSuite(tests=[

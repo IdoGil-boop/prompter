@@ -4,15 +4,15 @@ from __future__ import annotations
 import json
 import tempfile
 from pathlib import Path
-from typing import Any
-
-import pytest
+from typing import TYPE_CHECKING
 
 from prompter.config.agent_config import AgentConfig
 from prompter.eval.test_suite import TestCase, TestSuite
-from prompter.llm.adapter import LLMResponse, Message, TokenUsage
-from prompter.optimizer import Optimizer, OptimizerConfig, OptimizationResult
+from prompter.optimizer import OptimizationResult, Optimizer, OptimizerConfig
 from tests.conftest import MockLLM
+
+if TYPE_CHECKING:
+    from prompter.llm.adapter import Message
 
 
 def _make_smart_llm() -> MockLLM:
@@ -162,7 +162,7 @@ class TestOptimizer:
 
             # History file should exist and have records
             assert history_path.exists()
-            lines = [l for l in history_path.read_text().strip().split("\n") if l]
+            lines = [line for line in history_path.read_text().strip().split("\n") if line]
             assert len(lines) >= 1  # At least baseline record
 
     async def test_optimizer_saves_snapshots(self) -> None:

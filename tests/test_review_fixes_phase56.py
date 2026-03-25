@@ -10,15 +10,14 @@ import logging
 import os
 import tempfile
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 from unittest.mock import patch
-
-import pytest
-import yaml
 
 from prompter.cli import _parse_tiers
 from prompter.config.config_file import LLMConfig
 
+if TYPE_CHECKING:
+    import pytest
 
 # --- Issue 1: --tiers not wired to Optimizer ---
 
@@ -61,16 +60,11 @@ class TestTiersWiredToOptimizer:
 
     def test_optimize_passes_tiers_to_optimizer(self) -> None:
         """When --tiers is provided, Optimizer should receive escalation_tiers."""
-        from unittest.mock import MagicMock, AsyncMock
 
-        from prompter.config.agent_config import AgentConfig
-        from prompter.eval.evaluator import EvalReport
-        from prompter.eval.test_suite import TestCase, TestSuite
-        from prompter.optimizer import Optimizer, OptimizationResult
+        from prompter.optimizer import Optimizer
 
         # We patch Optimizer.__init__ to capture args
         init_kwargs: dict[str, Any] = {}
-        original_init = Optimizer.__init__
 
         def capturing_init(self_opt: Any, **kwargs: Any) -> None:
             init_kwargs.update(kwargs)
