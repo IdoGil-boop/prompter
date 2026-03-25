@@ -1,0 +1,41 @@
+tests:
+  - id: add_simple
+    input: "What is 2 + 3?"
+    expected: "5"
+    eval_mode: exact_match
+  - id: subtract
+    input: "What is 10 - 4?"
+    expected: "6"
+    eval_mode: exact_match
+  - id: multiply
+    input: "What is 6 * 7?"
+    expected: "42"
+    eval_mode: exact_match
+  - id: divide
+    input: "What is 15 / 3?"
+    expected: "5.0"
+    eval_mode: exact_match
+  - id: add_large
+    input: "What is 123 + 456?"
+    expected: "579"
+    eval_mode: exact_match
+  - id: order_of_ops
+    input: "What is 2 + 3 * 4?"
+    expected: "14"
+    eval_mode: exact_match
+  - id: negative
+    input: "What is -5 + 3?"
+    expected: "-2"
+    eval_mode: exact_match
+  - id: decimal
+    input: "What is 1.5 + 2.5?"
+    expected: "4.0"
+    eval_mode: exact_match
+  - id: power
+    input: "What is 2 ** 10?"
+    expected: "1024"
+    eval_mode: exact_match
+  - id: modulo
+    input: "What is 17 % 5?"
+    expected: "2"
+    eval_mode: exact_match

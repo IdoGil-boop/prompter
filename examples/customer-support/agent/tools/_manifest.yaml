@@ -1,0 +1,23 @@
+lookup_order:
+  description: Look up an order by order ID. Returns order status, items, and shipping info.
+  parameters_schema:
+    type: object
+    properties:
+      order_id:
+        type: string
+        description: The order ID to look up
+    required:
+      - order_id
+  enabled: true
+
+check_return_eligibility:
+  description: Check if an order is eligible for return. Returns eligibility status and reason.
+  parameters_schema:
+    type: object
+    properties:
+      order_id:
+        type: string
+        description: The order ID to check
+    required:
+      - order_id
+  enabled: true

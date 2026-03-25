@@ -1,0 +1,35 @@
+tests:
+  - id: order-status
+    input: "What's the status of order ORD-1234?"
+    expected: "shipped"
+    eval_mode: contains
+
+  - id: order-items
+    input: "What items are in order ORD-1234?"
+    expected: "T-Shirt"
+    eval_mode: contains
+
+  - id: return-eligible
+    input: "Can I return order ORD-5678?"
+    expected: "30-day"
+    eval_mode: contains
+
+  - id: return-not-eligible
+    input: "Can I return order ORD-9999?"
+    expected: "processing"
+    eval_mode: contains
+
+  - id: order-not-found
+    input: "What's the status of order ORD-0000?"
+    expected: "not found"
+    eval_mode: contains
+
+  - id: greeting
+    input: "Hi, I need help with my order"
+    expected: "help"
+    eval_mode: contains
+
+  - id: escalation
+    input: "I want to speak to a manager about a billing dispute"
+    expected: "human"
+    eval_mode: contains

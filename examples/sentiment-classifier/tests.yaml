@@ -1,0 +1,138 @@
+name: "Sentiment Classification"
+description: "15 labeled sentiment analysis test cases"
+tests:
+  - id: pos-1
+    input: "I absolutely love this product! Best purchase ever."
+    expected: "POSITIVE"
+    eval: exact_match
+    config:
+      case_insensitive: true
+      strip_whitespace: true
+    tags: [positive, strong]
+
+  - id: pos-2
+    input: "The customer service was outstanding and very helpful."
+    expected: "POSITIVE"
+    eval: exact_match
+    config:
+      case_insensitive: true
+      strip_whitespace: true
+    tags: [positive]
+
+  - id: pos-3
+    input: "Great value for money, highly recommend!"
+    expected: "POSITIVE"
+    eval: exact_match
+    config:
+      case_insensitive: true
+      strip_whitespace: true
+    tags: [positive]
+
+  - id: pos-4
+    input: "This made my day so much better."
+    expected: "POSITIVE"
+    eval: exact_match
+    config:
+      case_insensitive: true
+      strip_whitespace: true
+    tags: [positive, subtle]
+
+  - id: pos-5
+    input: "Exceeded all my expectations!"
+    expected: "POSITIVE"
+    eval: exact_match
+    config:
+      case_insensitive: true
+      strip_whitespace: true
+    tags: [positive, strong]
+
+  - id: neg-1
+    input: "Terrible experience, would not recommend to anyone."
+    expected: "NEGATIVE"
+    eval: exact_match
+    config:
+      case_insensitive: true
+      strip_whitespace: true
+    tags: [negative, strong]
+
+  - id: neg-2
+    input: "The product broke after just two days of use."
+    expected: "NEGATIVE"
+    eval: exact_match
+    config:
+      case_insensitive: true
+      strip_whitespace: true
+    tags: [negative]
+
+  - id: neg-3
+    input: "Worst customer support I have ever dealt with."
+    expected: "NEGATIVE"
+    eval: exact_match
+    config:
+      case_insensitive: true
+      strip_whitespace: true
+    tags: [negative, strong]
+
+  - id: neg-4
+    input: "Very disappointing quality for the price."
+    expected: "NEGATIVE"
+    eval: exact_match
+    config:
+      case_insensitive: true
+      strip_whitespace: true
+    tags: [negative]
+
+  - id: neg-5
+    input: "I regret buying this, total waste of money."
+    expected: "NEGATIVE"
+    eval: exact_match
+    config:
+      case_insensitive: true
+      strip_whitespace: true
+    tags: [negative, strong]
+
+  - id: edge-1
+    input: "It's not the worst thing I've ever used."
+    expected: "NEGATIVE"
+    eval: exact_match
+    config:
+      case_insensitive: true
+      strip_whitespace: true
+    tags: [negative, subtle, edge]
+
+  - id: edge-2
+    input: "I guess it's okay, nothing special."
+    expected: "NEGATIVE"
+    eval: exact_match
+    config:
+      case_insensitive: true
+      strip_whitespace: true
+    tags: [negative, subtle, edge]
+
+  - id: edge-3
+    input: "Despite some issues, I'm happy with the purchase."
+    expected: "POSITIVE"
+    eval: exact_match
+    config:
+      case_insensitive: true
+      strip_whitespace: true
+    tags: [positive, subtle, edge]
+
+  - id: edge-4
+    input: "The food was amazing but the service was awful."
+    expected: "NEGATIVE"
+    eval: exact_match
+    config:
+      case_insensitive: true
+      strip_whitespace: true
+    tags: [negative, mixed, edge]
+    weight: 1.5
+
+  - id: edge-5
+    input: "Not bad at all, I'm pleasantly surprised!"
+    expected: "POSITIVE"
+    eval: exact_match
+    config:
+      case_insensitive: true
+      strip_whitespace: true
+    tags: [positive, subtle, edge]

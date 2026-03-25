@@ -1,0 +1,22 @@
+{
+  "analyzed_at": "2026-03-24T19:42:00.336873",
+  "observation_count": 107,
+  "top_tools": {
+    "Read": 48,
+    "Write": 37,
+    "Grep": 18,
+    "Shell": 4
+  },
+  "top_files": {
+    "__init__.py": 12,
+    "activeContext.md": 10,
+    "INDEX.md": 5,
+    "progress.md": 5,
+    "SKILL.md": 4,
+    "base.py": 3,
+    "prompt.py": 3,
+    "ladder.py": 3,
+    "proposer.py": 3,
+    "store.py": 3
+  }
+}

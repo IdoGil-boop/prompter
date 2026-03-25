@@ -1,0 +1,11 @@
+calculate:
+  description: "Evaluate a mathematical expression and return the numeric result."
+  enabled: true
+  parameters_schema:
+    type: object
+    properties:
+      expression:
+        type: string
+        description: "A mathematical expression to evaluate (e.g., '2 + 3 * 4')"
+    required:
+      - expression

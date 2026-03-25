@@ -1,0 +1,150 @@
+<!-- managed by claude-code-starter -->
+name: Claude Auto-Fix PR Issues
+
+# Triggers:
+#   1. CI check failure (any "CI /" prefixed job from ci.yml)
+#   2. Cursor Bugbot completes its review
+#   3. chatgpt-codex-connector posts a PR review
+
+on:
+  check_run:
+    types: [completed]
+  pull_request_review:
+    types: [submitted]
+
+# Prevent multiple Claude sessions from racing on the same PR.
+# cancel-in-progress: false queues fixes rather than cancels mid-run.
+concurrency:
+  group: |
+    claude-fix-pr-${{
+      github.event.pull_request.number ||
+      github.event.check_run.pull_requests[0].number
+    }}
+  cancel-in-progress: false
+
+jobs:
+  # ─── 1. Fix CI Failures ─────────────────────────────────────────────────────
+  fix-ci-failure:
+    name: Fix CI failure — ${{ github.event.check_run.name }}
+    if: |
+      github.event_name == 'check_run' &&
+      github.event.check_run.conclusion == 'failure' &&
+      startsWith(github.event.check_run.name, 'CI /') &&
+      github.event.check_run.pull_requests[0] != null
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.check_run.pull_requests[0].head.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure git identity
+        run: |
+          git config user.name  "claude-auto-fix[bot]"
+          git config user.email "claude-auto-fix[bot]@users.noreply.github.com"
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          prompt: |
+            The CI check "${{ github.event.check_run.name }}" has FAILED on PR #${{ github.event.check_run.pull_requests[0].number }}.
+
+            Steps:
+            1. Get the full failure log:
+               gh run list --branch ${{ github.event.check_run.pull_requests[0].head.ref }} --limit 3
+               gh run view <most-recent-run-id> --log-failed
+            2. Fix all issues causing the failure. Per-check guidance:
+               - Frontend Lint & Type Check: cd frontend && npm ci && npm run lint && npm run build
+               - Backend Lint & Type Check: cd backend && pip install -r requirements.txt -q && ruff check backend/app/ --output-format=github
+               - Backend Tests: cd backend && pytest backend/tests/ -x --tb=short
+            3. Verify the fix by running the relevant command above.
+            4. Commit: fix: resolve CI failure in "${{ github.event.check_run.name }}"
+            5. Push to origin.
+            6. Post a short PR comment summarising what was broken and how it was fixed.
+            7. Run /maintain to capture learnings.
+
+            Constraints:
+            - Follow CLAUDE.md coding standards and single-source-of-truth principle
+            - Do NOT skip tests or add continue-on-error as a workaround
+            - If the fix is unclear, post a comment explaining the blocker instead
+          claude_args: "--max-turns 15"
+
+  # ─── 2. Address Bot Reviews (Cursor Bugbot + Codex) ─────────────────────────
+  address-bot-review:
+    name: Address ${{ github.event.review.user.login || 'Cursor Bugbot' }} review
+    if: |
+      (
+        github.event_name == 'pull_request_review' &&
+        (
+          contains(github.event.review.user.login, 'chatgpt-codex-connector') ||
+          contains(github.event.review.user.login, 'cursor-bugbot') ||
+          contains(github.event.review.user.login, 'cursor')
+        ) &&
+        github.event.review.state == 'commented'
+      ) ||
+      (
+        github.event_name == 'check_run' &&
+        contains(github.event.check_run.name, 'Cursor Bugbot') &&
+        github.event.check_run.conclusion != 'cancelled' &&
+        github.event.check_run.conclusion != 'skipped' &&
+        github.event.check_run.pull_requests[0] != null
+      )
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      PR_NUMBER: >-
+        ${{
+          github.event.pull_request.number ||
+          github.event.check_run.pull_requests[0].number
+        }}
+      BRANCH: >-
+        ${{
+          github.event.pull_request.head.ref ||
+          github.event.check_run.pull_requests[0].head.ref
+        }}
+      REVIEWER: >-
+        ${{ github.event.review.user.login || 'Cursor Bugbot' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.BRANCH }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure git identity
+        run: |
+          git config user.name  "claude-auto-fix[bot]"
+          git config user.email "claude-auto-fix[bot]@users.noreply.github.com"
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          allowed_bots: "chatgpt-codex-connector[bot],cursor-bugbot[bot],cursor[bot]"
+          prompt: |
+            ${{ env.REVIEWER }} has posted a review on PR #${{ env.PR_NUMBER }}.
+
+            Steps:
+            1. Fetch the full review and inline comments:
+               gh pr view ${{ env.PR_NUMBER }} --comments
+               gh api repos/{owner}/{repo}/pulls/${{ env.PR_NUMBER }}/comments
+            2. For each issue raised:
+               Fix immediately: real bugs, security issues, missing type hints on public functions,
+               bare except / silent failures / print() statements.
+               Skip with explanation: suggestions that violate CLAUDE.md single-source-of-truth,
+               style opinions conflicting with coding-style.md, over-engineering for one-time use.
+            3. Verify: cd backend && ruff check backend/app/ for backend changes; npm run lint for frontend.
+            4. Commit: fix: address ${{ env.REVIEWER }} review on PR #${{ env.PR_NUMBER }}
+            5. Push to origin.
+            6. Post a PR comment with two sections:
+               Fixed: what was changed and why
+               Skipped: what was intentionally skipped and reasoning
+            7. Run /maintain to capture learnings.
+          claude_args: "--max-turns 15"
